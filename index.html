@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Semantic Mobile OCR & Android Application — Live Interactive Simulator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <!-- Tesseract.js for in-browser Optical Character Recognition -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="brand-badge">
+        <svg class="android-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 16V9a7 7 0 0 1 14 0v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z"/>
+          <line x1="6" y1="3" x2="8.5" y2="6.5"/>
+          <line x1="18" y1="3" x2="15.5" y2="6.5"/>
+          <circle cx="9" cy="11" r="1" fill="currentColor"/>
+          <circle cx="15" cy="11" r="1" fill="currentColor"/>
+        </svg>
+        <span>Android 14 · Pixel Simulator</span>
+      </div>
+      <h1 class="header-title">Semantic Mobile OCR & Search Application</h1>
+    </div>
+    <div class="header-right">
+      <span class="status-pill live-pill">
+        <span class="pulsing-dot"></span> Live Emulation
+      </span>
+      <a href="https://github.com/PradeepDEIVAMANI/Development-of-Android-application" target="_blank" class="github-btn" rel="noreferrer">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        <span>GitHub Repository</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Content Layout -->
+  <main class="main-container">
+    
+    <!-- LEFT: Realistic Android Phone Simulator -->
+    <section class="device-section">
+      <div class="section-badge">MOBILE DEVICE RUNTIME</div>
+      
+      <!-- Phone Casing -->
+      <div class="smartphone-frame">
+        <!-- Speaker & Punch-hole camera -->
+        <div class="phone-top-notch">
+          <div class="camera-lens"></div>
+          <div class="speaker-grill"></div>
+        </div>
+
+        <!-- Android Status Bar -->
+        <div class="android-status-bar">
+          <span class="status-time" id="deviceClock">09:41</span>
+          <div class="status-icons">
+            <span class="network-badge">5G</span>
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L12 22l7.03-4.39C20.26 16.07 21 14.12 21 12c0-4.97-4.03-9-9-9z"/></svg>
+            <div class="battery-icon">
+              <div class="battery-level"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Phone Screen Content -->
+        <div class="phone-screen">
+          
+          <!-- App Bar -->
+          <div class="phone-app-bar">
+            <div class="app-info">
+              <div class="app-icon-mini">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              </div>
+              <div class="app-titles">
+                <span class="app-name">SearchEngine OCR</span>
+                <span class="package-name">com.example.searchengine</span>
+              </div>
+            </div>
+            <div class="phone-tabs">
+              <button class="phone-tab active" id="tabScan" onclick="switchPhoneMode('scanner')">Scanner</button>
+              <button class="phone-tab" id="tabSearch" onclick="switchPhoneMode('search')">Search Net</button>
+            </div>
+          </div>
+
+          <!-- MODE 1: SCANNER & OCR CAPTURE VIEW -->
+          <div class="phone-view active" id="viewScanner">
+            <!-- Camera Viewfinder -->
+            <div class="viewfinder-container">
+              <div class="viewfinder-lens" id="viewfinder">
+                <img id="scannedImagePreview" src="" alt="Captured Document" class="preview-img hidden">
+                <canvas id="ocrCanvas" class="ocr-canvas"></canvas>
+                
+                <div class="camera-grid" id="cameraGrid">
+                  <div class="grid-line horizontal top"></div>
+                  <div class="grid-line horizontal bottom"></div>
+                  <div class="grid-line vertical left"></div>
+                  <div class="grid-line vertical right"></div>
+                </div>
+
+                <!-- Animated Laser Bar -->
+                <div class="laser-scanner" id="laserScanner"></div>
+
+                <!-- Empty Viewfinder Prompt -->
+                <div class="viewfinder-placeholder" id="viewfinderEmpty">
+                  <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                    <circle cx="12" cy="13" r="4"/>
+                  </svg>
+                  <p class="placeholder-main">Aim camera at text or document</p>
+                  <p class="placeholder-sub">Select sample below or upload image</p>
+                </div>
+
+                <!-- Live OCR Confidence / Stats Overlay -->
+                <div class="ocr-stats-overlay hidden" id="ocrStatsOverlay">
+                  <span id="ocrWordsDetected">0 words</span>
+                  <span class="stats-sep">•</span>
+                  <span id="ocrConfidence">0% conf</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- OCR Controls Bar -->
+            <div class="scanner-actions">
+              <label for="cameraFileInput" class="scanner-btn capture-btn">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <span>Upload Document</span>
+                <input type="file" id="cameraFileInput" accept="image/*" style="display:none;">
+              </label>
+              <button class="scanner-btn run-ocr-btn" id="btnExtractText" onclick="triggerOCRScan()">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <span id="btnExtractTextLabel">Extract Text</span>
+              </button>
+            </div>
+
+            <!-- Sample Documents Quick-Pick -->
+            <div class="preset-section">
+              <span class="preset-label">Sample Documents:</span>
+              <div class="preset-chips">
+                <button class="chip active" onclick="loadSampleDoc('tech_article')">Java Article</button>
+                <button class="chip" onclick="loadSampleDoc('titre_sejour')">French ID</button>
+                <button class="chip" onclick="loadSampleDoc('receipt')">Expense Receipt</button>
+                <button class="chip" onclick="loadSampleDoc('code_snippet')">Android Code</button>
+              </div>
+            </div>
+
+            <!-- Extracted Text & Keywords Mini Sheet -->
+            <div class="extracted-sheet">
+              <div class="sheet-header">
+                <span class="sheet-title">EXTRACTED KEYWORDS</span>
+                <button class="use-in-search-btn" onclick="transferToSearch()">Send to Search &rarr;</button>
+              </div>
+              <div class="detected-tokens-pills" id="detectedTokensList">
+                <span class="token-placeholder">Select a document and press "Extract Text" to analyze</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- MODE 2: MAINACTIVITY SEARCH & INTENT DISPATCH -->
+          <div class="phone-view" id="viewSearch">
+            <div class="android-native-layout">
+              <div class="native-card">
+                <div class="layout-tag">MainActivity &bull; LinearLayout (activity_main.xml)</div>
+                
+                <!-- Native EditText et_search -->
+                <div class="native-edit-text-wrapper">
+                  <span class="field-label">android:id="@+id/et_search"</span>
+                  <div class="input-with-clear">
+                    <input type="text" id="et_search" class="native-edit-text" placeholder="Search keywords..." value="Java Spring Boot microservices">
+                    <button class="clear-input-btn" onclick="clearSearchInput()">&times;</button>
+                  </div>
+                </div>
+
+                <!-- Native Button b_search -->
+                <button class="native-button" id="b_search" onclick="executeSearchIntent()">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                  <span>Search (Intent.ACTION_WEB_SEARCH)</span>
+                </button>
+              </div>
+
+              <!-- Intent Execution Simulation -->
+              <div class="intent-status-card" id="intentStatusCard">
+                <div class="intent-header">
+                  <span class="intent-badge">INTENT DISPATCHED</span>
+                  <span class="intent-action">Intent.ACTION_WEB_SEARCH</span>
+                </div>
+                <div class="intent-details">
+                  <span class="param-key">SearchManager.QUERY:</span>
+                  <span class="param-val" id="intentQueryDisplay">"Java Spring Boot microservices"</span>
+                </div>
+                <div class="intent-details">
+                  <span class="param-key">Fallback URI:</span>
+                  <span class="param-val code" id="intentFallbackUri">http://www.google.com/#q=Java+Spring+Boot...</span>
+                </div>
+              </div>
+
+              <!-- In-App Web Search Results View -->
+              <div class="web-results-container">
+                <div class="results-toolbar">
+                  <div class="browser-omnibox">
+                    <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    <span id="omniboxText">google.com/search?q=...</span>
+                  </div>
+                  <a id="btnExternalGoogle" href="https://www.google.com/search?q=Java+Spring+Boot+microservices" target="_blank" class="open-external-btn" title="Open in real Google">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                  </a>
+                </div>
+
+                <div class="search-feed" id="searchFeed">
+                  <!-- Generated dynamically in app.js -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Android Gesture Bar -->
+        <div class="phone-bottom-bar">
+          <div class="gesture-handle"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT: Android Studio Development Workstation & Diagnostics -->
+    <section class="workstation-section">
+      
+      <!-- Tab Headers -->
+      <div class="workstation-nav">
+        <button class="nav-tab active" onclick="switchWorkstationTab('source')">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          Source Code
+        </button>
+        <button class="nav-tab" onclick="switchWorkstationTab('pipeline')">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+          Architecture
+        </button>
+        <button class="nav-tab" onclick="switchWorkstationTab('logcat')">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 17l6-6-6-6"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          Logcat Terminal
+        </button>
+        <button class="nav-tab" onclick="switchWorkstationTab('about')">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          Engineering Spec
+        </button>
+      </div>
+
+      <!-- WORKSTATION TAB 1: SOURCE CODE VIEWER -->
+      <div class="workstation-content active" id="tabContentSource">
+        <div class="file-tree-bar">
+          <button class="file-chip active" onclick="showFile('main_activity')">MainActivity.java</button>
+          <button class="file-chip" onclick="showFile('activity_xml')">activity_main.xml</button>
+          <button class="file-chip" onclick="showFile('manifest')">AndroidManifest.xml</button>
+        </div>
+        
+        <div class="code-editor-box">
+          <div class="code-editor-header">
+            <span class="file-path" id="currentFilePath">app/src/main/java/com/example/searchengine/MainActivity.java</span>
+            <span class="badge-lang" id="currentFileLang">Java</span>
+          </div>
+          <pre class="code-view" id="codeContainer"><code id="codeOutput"></code></pre>
+        </div>
+      </div>
+
+      <!-- WORKSTATION TAB 2: ARCHITECTURE PIPELINE -->
+      <div class="workstation-content" id="tabContentPipeline">
+        <div class="pipeline-card">
+          <h3 class="pipeline-title">Mobile OCR to Web Intent Dataflow</h3>
+          <div class="pipeline-flow">
+            
+            <div class="flow-step">
+              <div class="step-icon">📷</div>
+              <div class="step-info">
+                <h4>1. Camera Frame Acquisition</h4>
+                <p>Captures document via CameraX / Storage Intent with bitmap downsampling and orientation normalization.</p>
+              </div>
+            </div>
+
+            <div class="flow-arrow">&darr;</div>
+
+            <div class="flow-step">
+              <div class="step-icon">⚙️</div>
+              <div class="step-info">
+                <h4>2. Pre-processing & Thresholding</h4>
+                <p>Converts RGB to grayscale, applies Otsu binarization and contrast stretching for sharp glyph borders.</p>
+              </div>
+            </div>
+
+            <div class="flow-arrow">&darr;</div>
+
+            <div class="flow-step">
+              <div class="step-icon">🔤</div>
+              <div class="step-info">
+                <h4>3. Tesseract OCR Engine</h4>
+                <p>Recognizes character glyphs, groups words, computes bounding box coordinates and token confidence scores.</p>
+              </div>
+            </div>
+
+            <div class="flow-arrow">&darr;</div>
+
+            <div class="flow-step">
+              <div class="step-icon">🧠</div>
+              <div class="step-info">
+                <h4>4. Semantic Entity & Keyword Parsing</h4>
+                <p>Filters out stop-words, identifies high-entropy technical terms, names, and numbers for targeted querying.</p>
+              </div>
+            </div>
+
+            <div class="flow-arrow">&darr;</div>
+
+            <div class="flow-step">
+              <div class="step-icon">🚀</div>
+              <div class="step-info">
+                <h4>5. Intent Dispatcher (MainActivity)</h4>
+                <p>Packages query into <code>Intent.ACTION_WEB_SEARCH</code> with graceful fallback to browser <code>Intent.ACTION_VIEW</code>.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- WORKSTATION TAB 3: ANDROID LOGCAT TERMINAL -->
+      <div class="workstation-content" id="tabContentLogcat">
+        <div class="logcat-container">
+          <div class="logcat-header">
+            <span class="logcat-title">adb logcat -v time -s SearchEngine:V ActivityManager:I</span>
+            <div class="logcat-controls">
+              <button class="logcat-action-btn" onclick="clearLogcat()">Clear</button>
+              <button class="logcat-action-btn" onclick="copyLogcat()">Copy</button>
+            </div>
+          </div>
+          <div class="logcat-stream" id="logcatStream">
+            <!-- Dynamic Logcat lines -->
+          </div>
+        </div>
+      </div>
+
+      <!-- WORKSTATION TAB 4: SPECIFICATION -->
+      <div class="workstation-content" id="tabContentAbout">
+        <div class="spec-card">
+          <h3>Project Highlights & Architectural Details</h3>
+          <ul class="spec-list">
+            <li><strong>Intent-Driven Architecture:</strong> Decouples content extraction from web rendering by delegating search execution to the Android system's default search provider via <code>Intent.ACTION_WEB_SEARCH</code>.</li>
+            <li><strong>Fault-Tolerant Fallback:</strong> If no dedicated search assistant handles <code>ACTION_WEB_SEARCH</code>, catches <code>ActivityNotFoundException</code> and routes the query directly to Chrome/Web browser via <code>ACTION_VIEW</code>.</li>
+            <li><strong>Optimized Memory Footprint:</strong> Avoids heavy in-app browser webview memory overhead by executing search queries out-of-process in the user's preferred search app.</li>
+            <li><strong>Camera & OCR Lifecycle Management:</strong> Handles thread isolation for intensive character recognition pipelines, avoiding UI frame drops (60 FPS on Android).</li>
+          </ul>
+
+          <h4 style="margin-top:20px; color:#68d391;">Android SDK Specs</h4>
+          <div class="spec-grid">
+            <div class="spec-item"><span class="k">Compile SDK:</span> <span class="v">API 33 (Android 13)</span></div>
+            <div class="spec-item"><span class="k">Min SDK:</span> <span class="v">API 24 (Android 7.0)</span></div>
+            <div class="spec-item"><span class="k">Target SDK:</span> <span class="v">API 33</span></div>
+            <div class="spec-item"><span class="k">Language:</span> <span class="v">Java 11 / Java 17</span></div>
+            <div class="spec-item"><span class="k">UI Framework:</span> <span class="v">Android AppCompat / Material</span></div>
+            <div class="spec-item"><span class="k">Build System:</span> <span class="v">Gradle 8.0</span></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
